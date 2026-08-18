@@ -5,6 +5,8 @@ import os
 import uvicorn
 from scalar_fastapi import get_scalar_api_reference
 from middleware import setup_middleware, limiter
+from database import engine, Base
+import db_models
 
 load_dotenv()
 HOST = os.getenv("HOST", "127.0.0.1")
@@ -12,6 +14,7 @@ PORT = int(os.getenv("PORT", 3000))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
     print(f"Server is listening on {PORT}")
     yield
 

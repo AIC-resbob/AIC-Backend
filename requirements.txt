@@ -3,3 +3,4 @@ python-dotenv>=1.0.1
 uvicorn[standard]>=0.30.0
 slowapi>=0.1.9
 scalar-fastapi>=1.0.3
+sqlalchemy>=2.0.0
