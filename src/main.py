@@ -8,6 +8,8 @@ from middleware import setup_middleware, limiter
 from database import engine, Base
 import db_models
 from auth.router import router as auth_router
+from products.router import router as products_router
+from transactions.router import router as transaction_router
 from discount.router import router as discount_router
 from restock.router import router as restock_router
 load_dotenv()
@@ -28,9 +30,12 @@ app = FastAPI(
     lifespan=lifespan
     )
 setup_middleware(app)
+app.include_router(products_router)
+app.include_router(transaction_router)
 app.include_router(auth_router)
 app.include_router(discount_router)
 app.include_router(restock_router)
+
 @app.get("/docs", include_in_schema=False)
 async def scalar_docs(request: Request):
     return get_scalar_api_reference(

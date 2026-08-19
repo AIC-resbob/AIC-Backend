@@ -1,6 +1,6 @@
 a backend server for THIS AIC project
 
-API Docs : https://aic.elysiavernight.com/docs
+API Docs : aic.elysiavernight.com/docs
 ## how to use
 1. git clone this repo
 ```git clone https://github.com/AIC-resbob/AIC-backend```
@@ -47,11 +47,19 @@ Get the AI-Model from https://github.com/AIC-resbob/AIC
     │   ├── discount_engine_meta.joblib
     │   ├── restock_predictor_meta.joblib
     │   └── restock_predictor_model.joblib
-    └── restock
+    ├── products
+    │   ├── __init__.py
+    │   ├── router.py
+    │   └── schemas.py
+    ├── restock
+    │   ├── __init__.py
+    │   ├── router.py
+    │   ├── schemas.py
+    │   └── service.py
+    └── transactions
         ├── __init__.py
         ├── router.py
-        ├── schemas.py
-        └── service.py
+        └── schemas.py
 
-6 directories, 30 files
+8 directories, 36 files
 ```
