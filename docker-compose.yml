@@ -8,8 +8,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-     
+      - /etc/localtime:/etc/localtime:r
       - ./app.db:/app/app.db
       # Mount ML models (read-only)
       - ./src/models:/app/src/models:ro
