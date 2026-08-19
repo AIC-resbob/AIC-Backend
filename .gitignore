@@ -3,3 +3,4 @@ __pycache__
 app.db
 src/seed.py
 src/models
+legacy/

@@ -8,7 +8,8 @@ from middleware import setup_middleware, limiter
 from database import engine, Base
 import db_models
 from auth.router import router as auth_router
-
+from discount.router import router as discount_router
+from restock.router import router as restock_router
 load_dotenv()
 HOST = os.getenv("HOST", "127.0.0.1")
 PORT = int(os.getenv("PORT", 3000))
@@ -28,6 +29,8 @@ app = FastAPI(
     )
 setup_middleware(app)
 app.include_router(auth_router)
+app.include_router(discount_router)
+app.include_router(restock_router)
 @app.get("/docs", include_in_schema=False)
 async def scalar_docs(request: Request):
     return get_scalar_api_reference(
