@@ -30,9 +30,9 @@ app = FastAPI(
     lifespan=lifespan
     )
 setup_middleware(app)
+app.include_router(auth_router)
 app.include_router(products_router)
 app.include_router(transaction_router)
-app.include_router(auth_router)
 app.include_router(discount_router)
 app.include_router(restock_router)
 
