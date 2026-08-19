@@ -7,6 +7,7 @@ from scalar_fastapi import get_scalar_api_reference
 from middleware import setup_middleware, limiter
 from database import engine, Base
 import db_models
+from auth.router import router as auth_router
 
 load_dotenv()
 HOST = os.getenv("HOST", "127.0.0.1")
@@ -26,7 +27,7 @@ app = FastAPI(
     lifespan=lifespan
     )
 setup_middleware(app)
-
+app.include_router(auth_router)
 @app.get("/docs", include_in_schema=False)
 async def scalar_docs(request: Request):
     return get_scalar_api_reference(
