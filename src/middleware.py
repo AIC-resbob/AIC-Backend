@@ -10,7 +10,8 @@ def setup_middleware(app:FastAPI)->None:
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
     origins = [
-        "http://localhost:5173"
+        "http://localhost:5173",
+        "https://stockflow-fe-ten.vercel.app"
     ]
     app.add_middleware(
         CORSMiddleware,
