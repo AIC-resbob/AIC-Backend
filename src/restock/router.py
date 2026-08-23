@@ -37,5 +37,6 @@ async def get_restock_prediction(
         product=product,
         inv=product.inventory,
         eval_date=eval_date,
+        target_days=payload.target_days or 7,
         service_level_z=payload.service_level_z
     )

@@ -5,8 +5,8 @@ from typing import Optional
 class RestockRequest(BaseModel):
     product_id: int = Field(..., description="ID of the product to forecast")
     eval_date: Optional[str] = Field(None, description="Reference ISO date (YYYY-MM-DD), defaults to today")
-    service_level_z: Optional[float] = Field(None, description="Custom Z-score (defaults to metadata: 1.28 for ~90% service level)")
-
+    target_days: Optional[int] = Field(7, description="Target window days for restock forecast (defaults to 7)")
+    service_level_z: Optional[float] = Field(None, description="Custom Z-score")
 
 class HistoricalStats(BaseModel):
     demand_today: float

@@ -33,12 +33,14 @@ async def get_discount_recommendation(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid date format. Expected YYYY-MM-DD."
             )
+    price_to_use = payload.selling_price if payload.selling_price is not None else inv.selling_price
+    cogs_to_use = payload.cogs if payload.cogs is not None else inv.cogs
 
     result = recommend_optimal_discount(
         product_id=product.id,
         kategori=product.category,
-        selling_price=inv.selling_price,
-        cogs=inv.cogs,
+        selling_price=price_to_use,
+        cogs=cogs_to_use,
         current_stock=inv.current_stock,
         days_to_expiry=inv.days_to_expire,
         eval_date=eval_date,
@@ -49,8 +51,8 @@ async def get_discount_recommendation(
         "product_id": product.id,
         "product_name": product.name,
         "category": product.category,
-        "original_price": inv.selling_price,
-        "cogs": inv.cogs,
+        "original_price": price_to_use,
+        "cogs": cogs_to_use,
         "current_stock": inv.current_stock,
         "days_to_expiry": inv.days_to_expire,
         **result

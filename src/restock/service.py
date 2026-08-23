@@ -98,6 +98,7 @@ def forecast_restock(
     product: Product,
     inv: Inventory,
     eval_date: Optional[date] = None,
+    target_days: int = 7,
     service_level_z: Optional[float] = None
 ) -> dict:
     if eval_date is None:
@@ -156,9 +157,13 @@ def forecast_restock(
     predicted_7d_raw = float(model.predict(df[expected_features])[0])
     predicted_7d = max(0.0, predicted_7d_raw)
 
-    # 3. Compute safety stock and final restock recommendation
-    safety_stock = z * DEFAULT_RESIDUAL_STD
-    gross_requirement = predicted_7d + safety_stock
+    # Scale daily rate to target days
+    daily_demand = predicted_7d / 7.0
+    predicted_target_demand = daily_demand * target_days
+
+    # Compute safety stock and final restock recommendation based on target days
+    safety_stock = z * DEFAULT_RESIDUAL_STD * math.sqrt(target_days / 7.0)
+    gross_requirement = predicted_target_demand + safety_stock
     needed_qty = gross_requirement - inv.current_stock
     recommended_restock = max(0, math.ceil(needed_qty))
 
@@ -176,6 +181,7 @@ def forecast_restock(
         "category": product.category,
         "current_stock": inv.current_stock,
         "predicted_7d_demand": round(predicted_7d, 2),
+        "predicted_target_demand": round(predicted_target_demand, 2),
         "safety_stock": round(safety_stock, 2),
         "gross_requirement": round(gross_requirement, 2),
         "recommended_restock_quantity": recommended_restock,

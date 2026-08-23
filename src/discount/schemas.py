@@ -5,6 +5,8 @@ class DiscountRequest(BaseModel):
     product_id: int = Field(..., description="ID of the product in the database")
     current_date: Optional[str] = Field(None, description="ISO date (YYYY-MM-DD), defaults to today")
     target_days: Optional[int] = Field(7, description="Number of days to evaluate inventory clearance")
+    selling_price: Optional[float] = Field(None, description="Selling price overrides")
+    cogs: Optional[float] = Field(None, description="COGS overrides")
 
 class CandidateEvaluation(BaseModel):
     discount_pct: float
