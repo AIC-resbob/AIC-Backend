@@ -1,6 +1,6 @@
 a backend server for THIS AIC project
 
-API Docs : aic.elysiavernight.com/docs
+API Docs : https://aic.elysiavernight.com/docs
 ## how to use
 1. git clone this repo
 ```git clone https://github.com/AIC-resbob/AIC-backend```
