@@ -4,6 +4,7 @@ from datetime import datetime, date
 import joblib
 import pandas as pd
 import numpy as np
+from scipy import stats
 from typing import Optional
 
 # Load model and metadata once at startup
@@ -52,7 +53,8 @@ def recommend_optimal_discount(
     current_stock: int,
     days_to_expiry: int,
     eval_date: Optional[date] = None,
-    target_days: int = 7
+    target_days: int = 7,
+    service_level: float = 0.80
 ) -> dict:
     if eval_date is None:
         eval_date = date.today()
@@ -105,21 +107,22 @@ def recommend_optimal_discount(
     preds = model.predict(df[features])
     df["pred_daily_demand"] = np.clip(preds, a_min=0, a_max=None)
 
+    # For each candidate discount, estimate the probability that demand over `target_days`
+    # actually clears `current_stock` (Poisson demand, matching the notebook's discount
+    # engine) - a pure expected-profit argmax has no penalty for leftover unsold stock, so it
+    # never recommends a discount unless the model's own elasticity happens to make the
+    # discounted margin outweigh the extra units on its own. That defeats the point of an
+    # "overstock/clear it out" recommendation, since most of the stock can go unsold with no
+    # consequence to the score. Picking the smallest discount that hits a target clearance
+    # probability (falling back to whichever gets closest) actually optimizes for clearance.
     evaluations = []
-    best_candidate = None
-    best_profit = -float("inf")
-
-
-    urgency_penalty = 1.0
-    if days_to_expiry <= target_days:
-        urgency_penalty = 1.25
+    candidates = []
 
     for idx, row in df.iterrows():
-        est_sales_period = min(float(current_stock), float(row["pred_daily_demand"] * target_days))
+        mean_total_demand = float(row["pred_daily_demand"] * target_days)
+        est_sales_period = min(float(current_stock), mean_total_demand)
         est_profit = est_sales_period * row["margin_per_unit"]
-
-
-        effective_score = est_profit + (est_sales_period * urgency_penalty)
+        prob_clear = float(stats.poisson.sf(current_stock - 1, max(mean_total_demand, 1e-6)))
 
         cand_data = {
             "discount_pct": round(row["discount_pct"] * 100, 1),
@@ -130,13 +133,14 @@ def recommend_optimal_discount(
             "expected_profit": round(est_profit, 2)
         }
         evaluations.append(cand_data)
+        candidates.append({**cand_data, "prob_clear": prob_clear})
 
-        if effective_score > best_profit:
-            best_profit = effective_score
-            best_candidate = cand_data
-
-    status_msg = "OPTIMAL_PROFIT"
-    if days_to_expiry <= target_days and current_stock > (best_candidate["expected_units_sold"]):
+    feasible = [c for c in candidates if c["prob_clear"] >= service_level]
+    if feasible:
+        best_candidate = min(feasible, key=lambda c: c["discount_pct"])
+        status_msg = "OPTIMAL_PROFIT"
+    else:
+        best_candidate = max(candidates, key=lambda c: c["prob_clear"])
         status_msg = "CLEARANCE_URGENT"
 
     return {
