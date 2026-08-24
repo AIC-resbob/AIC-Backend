@@ -46,7 +46,6 @@ def compute_calendar_features(eval_date: date):
     }
 
 def recommend_optimal_discount(
-    product_id: int,
     kategori: str,
     selling_price: float,
     cogs: float,
@@ -87,7 +86,6 @@ def recommend_optimal_discount(
             "days_to_expiry": days_to_expiry,
             "stock_akhir": current_stock,
             "kategori": str(kategori),
-            "product_id": int(product_id),
             "discount_pct": d,
             "discounted_price": discounted_price,
             "margin_per_unit": discounted_price - cogs
@@ -97,13 +95,11 @@ def recommend_optimal_discount(
 
 
     df["kategori"] = df["kategori"].astype("category")
-    df["product_id"] = df["product_id"].astype("category")
-
 
     features = [
         "log_price_ratio", "trend", "dow_sin", "dow_cos",
         "is_periode_gajian", "is_ramadan", "days_to_expiry",
-        "stock_akhir", "kategori", "product_id"
+        "stock_akhir", "kategori"
     ]
 
     preds = model.predict(df[features])

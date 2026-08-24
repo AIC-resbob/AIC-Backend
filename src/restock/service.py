@@ -142,7 +142,6 @@ def forecast_restock(
         "is_periode_gajian_frac_7d": float(frac_gajian),
         "is_ramadan_frac_7d": float(frac_ramadan),
         "kategori": str(product.category),
-        "product_id": str(product.id),
     }
 
     df = pd.DataFrame([feature_row])
@@ -151,7 +150,7 @@ def forecast_restock(
         "roll_mean_7", "roll_std_7", "roll_mean_14", "roll_mean_28",
         "stock_akhir", "price_ratio", "trend", "dow_sin", "dow_cos",
         "is_periode_gajian", "is_ramadan", "is_periode_gajian_frac_7d",
-        "is_ramadan_frac_7d", "kategori", "product_id"
+        "is_ramadan_frac_7d", "kategori"
     ]
 
     predicted_7d_raw = float(model.predict(df[expected_features])[0])

@@ -37,7 +37,6 @@ async def get_discount_recommendation(
     cogs_to_use = payload.cogs if payload.cogs is not None else inv.cogs
 
     result = recommend_optimal_discount(
-        product_id=product.id,
         kategori=product.category,
         selling_price=price_to_use,
         cogs=cogs_to_use,
