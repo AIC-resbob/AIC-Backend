@@ -35,12 +35,13 @@ async def get_discount_recommendation(
             )
     price_to_use = payload.selling_price if payload.selling_price is not None else inv.selling_price
     cogs_to_use = payload.cogs if payload.cogs is not None else inv.cogs
+    stock_to_use = payload.current_stock if payload.current_stock is not None else inv.current_stock
 
     result = recommend_optimal_discount(
         kategori=product.category,
         selling_price=price_to_use,
         cogs=cogs_to_use,
-        current_stock=inv.current_stock,
+        current_stock=stock_to_use,
         days_to_expiry=inv.days_to_expire,
         eval_date=eval_date,
         target_days=payload.target_days
@@ -52,7 +53,7 @@ async def get_discount_recommendation(
         "category": product.category,
         "original_price": price_to_use,
         "cogs": cogs_to_use,
-        "current_stock": inv.current_stock,
+        "current_stock": stock_to_use,
         "days_to_expiry": inv.days_to_expire,
         **result
     }
