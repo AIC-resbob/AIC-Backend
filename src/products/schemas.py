@@ -25,6 +25,11 @@ class ProductCreate(BaseModel):
     category: str = Field(..., min_length=1)
     inventory: InventoryBase
 
+class ProductFullUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1)
+    category: Optional[str] = Field(None, min_length=1)
+    inventory: Optional[InventoryUpdate] = None
+
 class ProductResponse(BaseModel):
     id: int
     name: str

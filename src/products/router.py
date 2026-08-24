@@ -11,6 +11,7 @@ from products.schemas import (
     InventoryResponse,
     DashboardOverviewResponse,
     DashboardOverviewItem,
+    ProductFullUpdate,
 )
 
 router = APIRouter(prefix="/api", tags=["Products & Inventory"])
@@ -58,6 +59,33 @@ async def create_product(
         days_to_expire=payload.inventory.days_to_expire
     )
     db.add(inv)
+    db.commit()
+    db.refresh(product)
+    return product
+
+@router.put("/products/{product_id}", response_model=ProductResponse)
+async def update_product_full(
+    product_id: int,
+    payload: ProductFullUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+
+    if payload.name is not None:
+        product.name = payload.name
+    if payload.category is not None:
+        product.category = payload.category
+
+    if payload.inventory:
+        inv = product.inventory
+        if inv:
+            update_data = payload.inventory.model_dump(exclude_unset=True)
+            for key, value in update_data.items():
+                setattr(inv, key, value)
+
     db.commit()
     db.refresh(product)
     return product
