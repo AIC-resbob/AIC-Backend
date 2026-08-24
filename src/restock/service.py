@@ -145,6 +145,7 @@ def forecast_restock(
     }
 
     df = pd.DataFrame([feature_row])
+    df["kategori"] = df["kategori"].astype("category")
     expected_features = [
         "lag_1", "lag_7", "lag_14", "lag_28", "demand_today",
         "roll_mean_7", "roll_std_7", "roll_mean_14", "roll_mean_28",
