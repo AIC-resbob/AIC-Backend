@@ -1,6 +1,6 @@
 a backend server for THIS AIC project
 
-API Docs : https://aic.elysiavernight.com/docs
+
 ## how to use
 1. git clone this repo
 ```git clone https://github.com/AIC-resbob/AIC-backend```
@@ -12,6 +12,7 @@ For Linux
 3. Do ```pip install -r requirements.txt```
 4. You need to get the proper AI model, you can get the model from the repository provided below. then you need to place them on the correct folders according to the project structure
 4. for Linux users use ```sh run.sh```, for windows just run the ```run.bat```
+5. You can access the API docs via http://localhost:7700/docs
 
 
 ## Project Structure
