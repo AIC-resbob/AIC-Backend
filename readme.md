@@ -10,7 +10,8 @@ For Linux
 ```python -m venv .venv```
 ```source .venv/bin/activate```
 3. Do ```pip install -r requirements.txt```
-4. for Linux users use ```sh run.sh```, for winslop just run the ```run.bat```
+4. You need to get the proper AI model, you can get the model from the repository provided below. then you need to place them on the correct folders according to the project structure
+4. for Linux users use ```sh run.sh```, for windows just run the ```run.bat```
 
 
 ## Project Structure
